@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PACKAGE="emacs-31"
+STOW_DIR="/usr/local/stow"
+SRC_DIR="$HOME/src/emacs"
+
+# Already installed and stowed?
+if command -v emacs >/dev/null 2>&1 &&
+   [[ -d "$STOW_DIR/$PACKAGE" ]]; then
+    echo "Emacs is already installed."
+    exit 0
+fi
+
+mkdir -p "$HOME/src"
+sudo mkdir -p "$STOW_DIR"
+
+# Clone Emacs if necessary.
+if [[ ! -d "$SRC_DIR/.git" ]]; then
+    git clone https://git.savannah.gnu.org/git/emacs.git "$SRC_DIR"
+fi
+
+cd "$SRC_DIR"
+
+./autogen.sh
+
+./configure \
+    --prefix="$STOW_DIR/$PACKAGE" \
+    --with-native-compilation=aot \
+    --with-tree-sitter \
+    --with-modules \
+    --with-rsvg \
+    --with-imagemagick \
+    --with-x-toolkit=gtk3
+
+make -j"$(nproc)"
+
+sudo make install
+
+cd "$STOW_DIR"
+
+# Don't overwrite an existing Stow package.
+if [[ -e "$STOW_DIR/$(basename "$PACKAGE")" ]]; then
+    sudo stow -D "$PACKAGE" || true
+fi
+
+sudo stow "$PACKAGE"
+
+echo "Emacs installed and stowed as $PACKAGE."
