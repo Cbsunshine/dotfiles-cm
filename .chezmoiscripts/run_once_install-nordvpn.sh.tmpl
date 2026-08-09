@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export DEBIAN_FRONTEND=noninteractive
+
+if command -v nordvpn >/dev/null 2>&1; then
+    echo "NordVPN is already installed."
+    exit 0
+fi
+
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+cd "$TMP_DIR"
+
+echo "Downloading NordVPN installer..."
+
+curl -fsSLo nordvpn-install.sh \
+    https://downloads.nordcdn.com/apps/linux/install.sh
+
+sudo bash nordvpn-install.sh
+
+echo "NordVPN installed successfully."
+echo
+echo "NordVPN login has NOT been performed."
+echo "After your password store is restored, run:"
+echo
+echo '    nordvpn login --token "$(pass show Secrets/NordVPN_Token)"'
