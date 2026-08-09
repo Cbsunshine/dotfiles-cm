@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PACKAGE="ble.sh"
+STOW_DIR="/usr/local/stow"
+SRC_DIR="$HOME/src/ble.sh"
+
+# Already installed?
+if [[ -f "$STOW_DIR/$PACKAGE/share/blesh/ble.sh" ]]; then
+    echo "ble.sh is already installed."
+    exit 0
+fi
+
+mkdir -p "$HOME/src"
+sudo mkdir -p "$STOW_DIR"
+
+# Clone ble.sh if necessary.
+if [[ ! -d "$SRC_DIR/.git" ]]; then
+    git clone \
+        --recursive \
+        --depth 1 \
+        --shallow-submodules \
+        https://github.com/akinomyoga/ble.sh.git \
+        "$SRC_DIR"
+fi
+
+cd "$SRC_DIR"
+
+# Install into the Stow package directory.
+make -C ble.sh install PREFIX="$STOW_DIR/$PACKAGE"
+
+# Activate it.
+cd "$STOW_DIR"
+
+sudo stow -D "$PACKAGE" 2>/dev/null || true
+sudo stow "$PACKAGE"
+
+echo "ble.sh installed and stowed."
