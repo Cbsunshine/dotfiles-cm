@@ -1,0 +1,115 @@
+shopt -s autocd
+
+# Use * as wuldcard
+shopt -s dotglob
+
+# autocorrects cd misspellings
+shopt -s cdspell
+# Causes bash to append to history instead of overwriting it so if you start a new terminal, you have old session history
+shopt -s histappend
+PROMPT_COMMAND='history -a'
+
+# Ignore case on auto-completion
+# Note: bind used instead of sticking these in .inputrc
+if [[ $iatest > 0 ]]; then bind "set completion-ignore-case on"; fi
+
+
+
+# History
+HISTSIZE=100000
+HISTFILESIZE=200000
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+
+# Aliases and Scripts
+
+# Enable bash programmable completion features in interactive shells
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+	. /usr/share/bash-completion/bash_completion
+elif [ -f /etc/bash_completion ]; then
+	. /etc/bash_completion
+fi
+
+
+alias ls='ls --color=auto'
+alias ll='ls -lah'
+alias la='ls -A'
+
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+
+alias ..='cd ..'
+alias ...='cd ../..'
+
+alias gs='git status'
+alias d='docker'
+alias dc='docker compose'
+
+#User-defined aliases
+alias rm=/usr/bin/rm
+alias gt=/usr/local/trash
+alias em='emacsclient -s main -c -a ""'
+alias emt='emacsclient -s main -t -a ""'
+alias esp='emacsclient -s emacspeak -c -a ""'
+alias espt='emacsclient -s emacspeak -t -a ""'
+alias ekill='emacsclient -s main -e "(kill-emacs)"'
+alias espkill='emacsclient -s emacspeak -e "(kill-emacs)"'
+
+# Exports
+
+export TERM=xterm-256color
+export COLORTERM=truecolor
+export PATH="$HOME/dotfiles/binaries:$PATH"
+
+
+# Don't put duplicate lines in the history and do not add lines that start with a space
+export HISTCONTROL=erasedups:ignoredups:ignorespace
+
+
+
+
+# Emacs
+alias e='emacsclient -c -a emacs'
+
+# fd-find
+if command -v fdfind >/dev/null; then
+    alias fd='fdfind'
+fi
+
+
+# zoxide
+if command -v zoxide >/dev/null; then
+    eval "$(zoxide init bash)"
+fi
+
+export EDITOR=emacsclient
+export VISUAL=emacsclient
+PS1='\u@\h:\w\$ '
+
+# -----------------------------
+# ble.sh (must be early)
+# -----------------------------
+if [[ $- == *i* ]]; then
+  source ~/.local/share/blesh/ble.sh --attach=none
+fi
+
+# -----------------------------
+# fzf integration (must be AFTER bash_completion)
+# -----------------------------
+if [ -f /etc/profile.d/bash_completion.sh ]; then
+  source /etc/profile.d/bash_completion.sh
+fi
+
+# fzf keybindings + completion (ble-compatible way)
+ble-import -d integration/fzf-key-bindings
+ble-import -d integration/fzf-completion
+
+# -----------------------------
+# attach ble.sh LAST
+# -----------------------------
+ble-attach
+# Fix ble.sh suggestion visibility (0.4.x builds)
+
+ble-face-syntax region_auto_complete=fg=244
+ble-face-syntax region_insert=fg=250

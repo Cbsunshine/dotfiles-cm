@@ -1,0 +1,150 @@
+# Interactive shells only
+[[ $- != *i* ]] && return
+
+
+# Shell options
+
+shopt -s autocd
+shopt -s dotglob
+shopt -s cdspell
+shopt -s histappend
+
+PROMPT_COMMAND='history -a'
+
+# History
+HISTSIZE=100000
+HISTFILESIZE=200000
+HISTCONTROL=ignoredups:erasedups
+
+# Ignore case on completion
+bind "set completion-ignore-case on"
+# Environment
+
+export TERM=xterm-256color
+export COLORTERM=truecolor
+
+export EDITOR=emacsclient
+export VISUAL=emacsclient
+
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+
+
+# History
+export HISTCONTROL=erasedups:ignoredups:ignorespace
+# Bash completion
+
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+  source /usr/share/bash-completion/bash_completion
+elif [ -f /etc/bash_completion ]; then
+  source /etc/bash_completion
+fi
+alias ls='ls --color=auto'
+alias ll='ls -lah'
+alias la='ls -A'
+
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='echo "This is not the command you are looking for."; false'
+
+alias tp='trash-put'
+
+alias gs='git status'
+alias d='docker'
+alias dc='docker compose'
+
+alias gt='/usr/local/trash'
+
+alias em='emacsclient -s main -c -a ""'
+alias emt='emacsclient -s main -t -a ""'
+
+alias esp='emacsclient -s emacspeak -c -a ""'
+alias espt='emacsclient -s emacspeak -t -a ""'
+
+alias ekill='emacsclient -s main -e "(kill-emacs)"'
+alias espkill='emacsclient -s emacspeak -e "(kill-emacs)"'
+
+alias e='emacsclient -c -a emacs'
+# fd
+if command -v fdfind >/dev/null; then
+    alias fd='fdfind'
+fi
+
+# fzf
+eval "$(fzf --bash)"
+
+# zoxide
+if command -v zoxide >/dev/null; then
+    eval "$(zoxide init bash)"
+fi
+
+# FZF Process Killer
+fpkill() {
+    local selection
+    selection=$(ps -e -o pid,comm | fzf)
+    local pid=$(echo "$selection" | awk '{print $1}')
+    local pname=$(echo "$selection" | awk '{print $2}')
+    if [ "$pid" != "" ]; then
+        kill -9 "$pid" > /dev/null 2>&1 && echo "Process $pname (PID $pid) has been successfully killed."
+    fi
+}
+
+# extract archive files
+
+extract() {
+    if [ $# -lt 1 ]; then
+        echo "Usage: extract file"
+        return 1
+    fi
+
+    if [ -f "$1" ]; then
+        case $1 in
+            *.tar.xz)  tar -xvf "$1" ;;
+            *.tar.bz2) tar -jxvf "$1" ;;
+            *.tar.gz)  tar -zxvf "$1" ;;
+            *.zip)     unzip "$1" ;;
+            *.7z)      7z x "$1" ;;
+            *.rar)     7z x "$1" ;;
+            *) echo "Unknown archive type: $1" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+# -----------------------------
+# ble.sh (must load early)
+# -----------------------------
+if [[ $- == *i* ]]; then
+  if [ -f "/usr/local/stow/ble.sh/share/blesh/ble.sh" ]; then
+    source "/usr/local/stow/ble.sh/share/blesh/ble.sh" --attach=none
+  fi
+fi
+
+if type ble-import >/dev/null 2>&1; then
+  ble-import -d integration/fzf-key-bindings
+  ble-import -d integration/fzf-completion
+fi
+
+PS1='\A | \W \$ 
+'
+# theme
+if command -v ble-face >/dev/null; then
+    ble-face auto_complete='fg=246'
+    ble-face -s menu_complete_match fg=015,bg=126
+    ble-face region_insert='fg=27'
+fi
+
+# attach ble LAST
+if command -v ble-attach >/dev/null; then
+    ble-attach
+fi
+if [[ -n "$SSH_CONNECTION" ]]; then
+    source "$HOME/bashrc.d/themes/phone.sh"
+else
+    source "$HOME/bashrc.d/themes/desktop.sh"
+fi
