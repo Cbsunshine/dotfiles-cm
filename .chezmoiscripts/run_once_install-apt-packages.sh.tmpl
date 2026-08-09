@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+°#!/usr/bin/env bash
 set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
@@ -7,11 +7,15 @@ sudo apt-get update
 
 sudo apt-get install -y \
     git \
+    curl \
+    wget \
+    ca-certificates \
     gnupg \
     pass \
     age \
     fzf \
     fd-find \
+    ripgrep \
     trash-cli \
     build-essential \
     autoconf \
@@ -41,16 +45,4 @@ sudo apt-get install -y \
     speech-dispatcher \
     espeak-ng \
     tcl \
-    tk \
-    git \
-    curl \
-    wget \
-    ca-certificates \
-    gnupg \
-    pass \
-    age \
-    fzf \
-    fd-find \
-    ripgrep \
-    trash-cli \
-    build-essential \
+    tk
