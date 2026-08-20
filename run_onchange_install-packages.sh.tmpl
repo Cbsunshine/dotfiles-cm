@@ -1,0 +1,29 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+
+set -euo pipefail
+
+sudo apt-get update
+
+apt_packages=(
+{{ range .packages.linux.apt -}}
+    {{ . | quote }}
+{{ end -}}
+)
+
+sudo apt-get install -y "${apt_packages[@]}"
+
+{{ else if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -euo pipefail
+
+brew_packages=(
+{{ range .packages.darwin.brew -}}
+    {{ . | quote }}
+{{ end -}}
+)
+
+brew install "${brew_packages[@]}"
+
+{{ end -}}

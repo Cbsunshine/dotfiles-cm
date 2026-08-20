@@ -484,4 +484,4 @@
  'server-after-make-frame-hook
  (lambda ()
    (when (string= server-name "emacspeak")
-     (load "/home/cassidy/dotfiles/emacs/config/.emacs.d/emacspeak/lisp/emacspeak-setup.el"))))
+     (load "/home/cassidy/src/emacspeak/lisp/emacspeak-setup.el"))))

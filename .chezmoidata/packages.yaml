@@ -1,0 +1,30 @@
+packages:
+  linux:
+    apt:
+      - build-essential
+      - curl
+      - wget
+      - git
+      - gh
+      - ripgrep
+      - fd-find
+      - fzf
+      - bat
+      - zip
+      - pass
+      - gnupg
+      - shellcheck
+
+  darwin:
+    brew:
+      - git
+      - gh
+      - ripgrep
+      - fd
+      - fzf
+      - bat
+      - jq
+      - rsync
+      - stow
+      - gnupg
+      - emacs

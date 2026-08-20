@@ -1,0 +1,21 @@
+# =============================================================================
+# Source repositories
+# =============================================================================
+
+[".local/src/emacs"]
+    type = "git-repo"
+    url = "https://github.com/emacs-mirror/emacs.git"
+    refreshPeriod = "168h"
+
+
+[".local/src/emacspeak"]
+    type = "git-repo"
+    url = "https://github.com/tvraman/emacspeak.git"
+    refreshPeriod = "168h"
+
+
+[".local/src/ble.sh"]
+    type = "git-repo"
+    url = "https://github.com/akinomyoga/ble.sh.git"
+    refreshPeriod = "168h"
+

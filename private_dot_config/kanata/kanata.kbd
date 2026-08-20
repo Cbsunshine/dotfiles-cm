@@ -1,0 +1,355 @@
+;; ============================================================
+;; Kanata configuration for SEMICO USB Gaming Keyboard
+;;
+;; Based directly on the existing Keys configuration.
+;;
+;; Home-row mods:
+;;
+;;   S = Alt       D = Shift       F = Ctrl
+;;   J = Ctrl      K = Shift       L = Alt
+;;
+;; Layers:
+;;
+;;   Hold Space     -> Symbol layer
+;;   Hold Caps Lock -> Numpad layer
+;;
+;;   Tap Space      -> Space
+;;   Tap Caps Lock  -> Escape
+;;
+;; The configuration intentionally only includes keys that are
+;; remapped. All other keys on the full-size keyboard pass
+;; through normally.
+;; ============================================================
+
+
+;; ============================================================
+;; Global configuration
+;; ============================================================
+
+(defcfg
+
+  ;; Only intercept the SEMICO QWERTY keyboard.
+;;   linux-dev /dev/input/by-id/usb-SEMICO_USB_Gaming_Keyboard-event-kbd
+
+  ;; Allow keys not listed in defsrc to pass through normally.
+  process-unmapped-keys yes
+)
+
+
+;; ============================================================
+;; Aliases
+;; ============================================================
+
+(defalias
+
+  ;; ----------------------------------------------------------
+  ;; Layer keys
+  ;; ----------------------------------------------------------
+
+  ;; Space:
+  ;;   tap  = Space
+  ;;   hold = Symbol layer
+  sym (tap-hold-release 200 200 spc (layer-while-held sym))
+
+
+  ;; Caps Lock:
+  ;;   tap  = Escape
+  ;;   hold = Numpad layer
+  num (tap-hold-release 200 200 esc (layer-while-held numpad))
+
+
+  ;; ----------------------------------------------------------
+  ;; Home-row mods
+  ;; ----------------------------------------------------------
+
+  ;; S:
+  ;;   tap  = s
+  ;;   hold = Left Alt
+  s-alt (tap-hold-release 200 200 s lalt)
+
+
+  ;; D:
+  ;;   tap  = d
+  ;;   hold = Left Shift
+  d-shift (tap-hold-release 200 200 d lsft)
+
+
+  ;; F:
+  ;;   tap  = f
+  ;;   hold = Left Ctrl
+  f-ctrl (tap-hold-release 200 200 f lctl)
+
+
+  ;; J:
+  ;;   tap  = j
+  ;;   hold = Left Ctrl
+  j-ctrl (tap-hold-release 200 200 j lctl)
+
+
+  ;; K:
+  ;;   tap  = k
+  ;;   hold = Left Shift
+  k-shift (tap-hold-release 200 200 k lsft)
+
+
+  ;; L:
+  ;;   tap  = l
+  ;;   hold = Left Alt
+  l-alt (tap-hold-release 200 200 l lalt)
+)
+
+
+;; ============================================================
+;; Source keys
+;;
+;; These are ONLY the keys Kanata needs to intercept.
+;;
+;; Everything else on your full-size keyboard is left alone
+;; because process-unmapped-keys is enabled.
+;;
+;; The order here MUST match the order in every deflayer.
+;; ============================================================
+
+(defsrc
+
+  ;; Layer keys
+  caps
+  spc
+
+  ;; Home-row mods
+  s
+  d
+  f
+  j
+  k
+  l
+
+  ;; Symbol layer
+  q
+  w
+  e
+  r
+  t
+  a
+  z
+  x
+  c
+  v
+  b
+
+  ;; Numpad layer
+  u
+  i
+  o
+  n
+  m
+  ,
+  .
+)
+
+
+;; ============================================================
+;; Main layer
+;; ============================================================
+
+(deflayer main
+
+  ;; ----------------------------------------------------------
+  ;; Layer keys
+  ;; ----------------------------------------------------------
+
+  @num
+  @sym
+
+
+  ;; ----------------------------------------------------------
+  ;; Home-row mods
+  ;; ----------------------------------------------------------
+
+  @s-alt
+  @d-shift
+  @f-ctrl
+  @j-ctrl
+  @k-shift
+  @l-alt
+
+
+  ;; ----------------------------------------------------------
+  ;; Symbol-layer keys
+  ;;
+  ;; Normal behavior when not holding Space.
+  ;; ----------------------------------------------------------
+
+  q
+  w
+  e
+  r
+  t
+
+  a
+  z
+  x
+  c
+  v
+  b
+
+
+  ;; ----------------------------------------------------------
+  ;; Numpad-layer keys
+  ;;
+  ;; Normal behavior when not holding Caps Lock.
+  ;; ----------------------------------------------------------
+
+  u
+  i
+  o
+  n
+  m
+  ,
+  .
+)
+
+
+;; ============================================================
+;; Symbol layer
+;;
+;; Activated by holding Space.
+;;
+;; Original Keys configuration:
+;;
+;;   Q = !
+;;   W = @
+;;   E = #
+;;   R = $
+;;   T = %
+;;
+;;   A = ^
+;;   S = &
+;;   D = *
+;;   F = (
+;;   G = )
+;;
+;;   Z = -
+;;   X = +
+;;   C = =
+;;   V = _
+;;   B = /
+;;
+;; Shifted symbols are represented as output chords.
+;; ============================================================
+
+(deflayer sym
+
+  ;; Layer keys
+  _
+  _
+
+
+  ;; Home-row mods become their normal letters while in
+  ;; the symbol layer.
+
+  s
+  d
+  f
+  j
+  k
+  l
+
+
+  ;; Q W E R T
+  S-1
+  S-2
+  S-3
+  S-4
+  S-5
+
+
+  ;; A
+  S-6
+
+  ;; Z X C V B
+  -
+  +
+  =
+  S--
+  /
+
+
+  ;; Right-hand keys remain transparent
+  u
+  i
+  o
+  n
+  m
+  ,
+  .
+)
+
+
+;; ============================================================
+;; Numpad layer
+;;
+;; Activated by holding Caps Lock.
+;;
+;; Original Keys configuration:
+;;
+;;   U = 7
+;;   I = 8
+;;   O = 9
+;;
+;;   J = 4
+;;   K = 5
+;;   L = 6
+;;
+;;   N = 1
+;;   M = 2
+;;   , = 3
+;;   . = 0
+;; ============================================================
+
+(deflayer numpad
+
+  ;; Layer keys
+  _
+  _
+
+
+  ;; Left-hand home row remains transparent
+  s
+  d
+  f
+
+
+  ;; J K L
+  4
+  5
+  6
+
+
+  ;; Left-hand symbol-layer keys remain transparent
+  q
+  w
+  e
+  r
+  t
+
+  a
+  z
+  x
+  c
+  v
+  b
+
+
+  ;; U I O
+  7
+  8
+  9
+
+
+  ;; N M , .
+  1
+  2
+  3
+  0
+)
