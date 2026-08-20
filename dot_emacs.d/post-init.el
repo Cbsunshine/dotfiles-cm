@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t; -*-
+;;-*- lexical-binding: t; -*-
 (native-comp-available-p)
 
 ;; Native compilation enhances Emacs performance by converting Elisp code into
@@ -38,7 +38,7 @@
   (compile-angel-on-load-mode 1))
 
 (use-package emacs
-  :straight nil
+  :ensure nil
   :custom
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/elisp/"))
   (setq inhibit-splash-screen t
@@ -64,9 +64,9 @@
 (use-package consult-gh
 :after (consult markdown-mode yaml))
 
-(use-package expand-region
-  :config (require 'html-mode-expansions)
-  :bind ("C-=" . er/expand-region))
+(use-package expreg
+  :bind (("C-=" . expreg-expand)
+         ("C--" . expreg-contract)))
 
 (use-package mwim
   :bind
@@ -79,7 +79,7 @@
 ;; contents of a buffer to reflect changes made to the underlying file
 ;; on disk.
 (use-package autorevert
-  :straight nil
+  :ensure nil
   :commands (auto-revert-mode global-auto-revert-mode)
   :hook
   (after-init . global-auto-revert-mode)
@@ -94,7 +94,7 @@
 ;; accessed files, making it easier to reopen files you have worked on
 ;; recently.
 (use-package recentf
-  :straight nil
+  :ensure nil
   :commands (recentf-mode recentf-cleanup)
   :hook
   (after-init . recentf-mode)
@@ -121,7 +121,7 @@
 ;; search strings, and other prompts, to a file. This allows users to retain
 ;; their minibuffer history across Emacs restarts.
 (use-package savehist
-  :straight nil
+  :ensure nil
   :commands (savehist-mode savehist-save)
   :hook
   (after-init . savehist-mode)
@@ -190,6 +190,20 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
+(use-package outline-indent
+  :commands outline-indent-minor-mode
+  :custom
+  (outline-indent-ellipsis " ▼"))
+
+;; Python
+(add-hook 'python-mode-hook #'outline-indent-minor-mode)
+(add-hook 'python-ts-mode-hook #'outline-indent-minor-mode)
+
+;; Yaml
+(add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
+(add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
+
+
 (use-package embark-consult
 
   :hook
@@ -223,7 +237,7 @@
          ("M-g f" . consult-flymake)
          ("M-g g" . consult-goto-line)
          ("M-g M-g" . consult-goto-line)
-         ("M-g o" . consult-outline)
+         ("M-g o" . consult-.outline)
          ("M-g m" . consult-mark)
          ("M-g k" . consult-global-mark)
          ("M-g i" . consult-imenu)
@@ -270,9 +284,9 @@
 (mapc #'disable-theme custom-enabled-themes)  ; Disable all active themes
 
 (use-package doric-themes
-  :ensure t)
-
-(load-theme 'doric-dark t)  ; Load the built-in theme
+  :demand t
+   :config
+(load-theme 'doric-dark t))  ; Load the built-in theme
 
 (use-package consult-flycheck
 
@@ -310,12 +324,12 @@
    (text-mode . outli-mode)))
 
 (use-package eww
-  :straight  nil   ;; eww is built-in
+  :ensure nil
   :hook
   (eww-mode . (lambda () (display-line-numbers-mode -1))))
 
 ;; (use-package dired
-;;   :straight nil
+;;
 ;;   :commands (dired)
 ;;   :custom
 ;;   (dired-listing-switches "-alh --group-directories-first")
@@ -323,28 +337,31 @@
 ;;   (dired-mode . dired-hide-details-mode)
 ;;   :config
 ;;   (put 'dired-find-alternate-file 'disabled nil))
+
+(use-package websocket
+  :ensure t)
+
 (use-package deno-bridge
-  :straight (:type git :host github :repo "manateelazycat/deno-bridge")
+  :ensure (:type git :host github
+           :repo "manateelazycat/deno-bridge")
   :init
   (use-package websocket))
 
 (use-package emmet2-mode
-  :straight (:type git
-             :host github
-             :repo "p233/emmet2-mode"
-             :files (:defaults "*.ts" "src" "data"))
+  :ensure (:host github
+           :repo "p233/emmet2-mode"
+           :files (:defaults "*.ts" "src" "data"))
+  :after deno-bridge
   :hook ((html-ts-mode . emmet2-mode)
-         (web-mode . emmet2-mode))
+         (web-mode . emmet2-mode)
+         (css-mode . emmet2-mode))
   :config
-  ;; Unbind default expansion key
   (define-key emmet2-mode-map (kbd "C-j") nil)
-
-  ;; Bind custom expansion key
-  (define-key emmet2-mode-map (kbd "C-c C-.") #'emmet2-expand))
-
+  (define-key emmet2-mode-map
+              (kbd "C-c C-.")
+              #'emmet2-expand))
 
 (use-package auto-rename-tag
-  :straight t
   ;; Enable in traditional and tree-sitter html/xml modes
   :hook ((html-mode . auto-rename-tag-mode)
          (web-mode . auto-rename-tag-mode)
@@ -387,7 +404,6 @@
 ;;       (expand-file-name "forge-database.sqlite" user-emacs-directory)))
 
 (use-package stripspace
-  :straight t
   :commands stripspace-local-mode
   :hook ((prog-mode . stripspace-local-mode)
          (text-mode . stripspace-local-mode)
@@ -408,7 +424,7 @@
   (stripspace-restore-column t))
 
 (use-package ispell
-  :straight nil
+  :ensure nil
   :commands (ispell ispell-minor-mode)
   :custom
   (ispell-program-name "aspell")
@@ -419,7 +435,7 @@
                        "--lang=en_US")))
 
 (use-package flyspell
-  :straight nil
+  :ensure nil
   :commands flyspell-mode
   :hook
   (; (prog-mode . flyspell-prog-mode)
@@ -456,7 +472,7 @@
   (helpful-max-buffers 7))
 
 (use-package elec-pair
-  :straight nil
+  :ensure nil
   :commands (electric-pair-mode
              electric-pair-local-mode
              electric-pair-delete-pair)
