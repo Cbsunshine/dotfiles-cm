@@ -19,3 +19,8 @@
     url = "https://github.com/akinomyoga/ble.sh.git"
     refreshPeriod = "168h"
 
+[".local/bin/pay-respects"]
+    type = "archive-file"
+    url = {{ gitHubLatestReleaseAssetURL "iffse/pay-respects" "pay-respects-*.*.*-x86_64-unknown-linux-musl.tar.zst" | quote }}
+    executable = true
+    path = "pay-respects"

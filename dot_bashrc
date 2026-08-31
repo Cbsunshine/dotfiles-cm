@@ -1,7 +1,6 @@
 # Interactive shells only
 [[ $- != *i* ]] && return
 
-#TEST
 # Shell options
 
 shopt -s autocd
@@ -30,7 +29,7 @@ export EDITOR='emacsclient -s main -t'
 export VISUAL='emacsclient -s main -t'
 
 
-export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.cargo/bin:$HOME/.deno/bin:$PATH"
 
 
 
@@ -49,18 +48,33 @@ if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
     source /usr/share/doc/fzf/examples/key-bindings.bash
 fi
 
-# ble.sh (syntax highlighting, auto-completion, suggestions)
-if [ -f "$HOME/.local/share/blesh/ble.sh" ]; then
-    source "$HOME/.local/share/blesh/ble.sh"
-    ble-import -d "$HOME/.local/share/blesh/contrib/integration/fzf-key-bindings.bash"
-    ble-face command_builtin='fg=yellow'
-    ble-face command_alias='fg=122 bg=black'
-    ble-face command_function='fg=yellow'
-    ble-face command_file='fg=yellow'
-    ble-face command_keyword='fg=yellow'
-    ble-face command_jobs='fg=yellow'
+if [ -f $HOME/.local/bin/pay-respects ]; then
+    eval "$(pay-respects bash --alias)"
+
 fi
 
+
+# ============================================================
+# ble.sh
+# ============================================================
+
+if [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
+    # Load ble.sh without attaching yet
+    source "$HOME/.local/share/blesh/ble.sh" --attach=none
+
+    # Load fzf integration
+    if [[ -f "$HOME/.local/share/blesh/contrib/integration/fzf-key-bindings.bash" ]]; then
+        ble-import -d "$HOME/.local/share/blesh/contrib/integration/fzf-key-bindings.bash"
+    fi
+
+    # Load our ble.sh configuration
+    if [[ -f "$HOME/.bashrc.d/blesh.sh" ]]; then
+        source "$HOME/.bashrc.d/blesh.sh"
+    fi
+fi
+
+alias cm='chezmoi'
+alias cme='chezmoi edit'
 alias bat="batcat"
 alias ls='ls --color=auto'
 alias ll='ls -lah'
@@ -89,7 +103,10 @@ if command -v fdfind >/dev/null; then
 fi
 
 #enhancd
-source ~/.local/src/enhancd/init.sh
+if [[ -f "$HOME/.local/src/enhancd/init.sh" ]]; then
+    source "$HOME/.local/src/enhancd/init.sh"
+fi
+
 
 # fzf
 eval "$(fzf --bash)"
@@ -132,27 +149,59 @@ extract() {
 mkcd() {
   mkdir -p "$1" && cd "$1"
 }
-# -----------------------------
-# ble.sh (must load early)
-# -----------------------------
-#    source -- ~/.local/share/blesh/ble.sh #--attach=none
 
-PS1='\A | \W \$
-'
-# theme
-if command -v ble-face >/dev/null; then
-    ble-face auto_complete='fg=246'
-    ble-face -s menu_complete_match fg=015,bg=126
-    ble-face region_insert='fg=27'
-fi
+# Screen Setup
+homelab_screen() {
+    screen -D -R homelab
+}
 
-# attach ble LAST
-if command -v ble-attach >/dev/null; then
+history_delete_fzf() {
+    local selected
+    local commands
+
+    if [[ ! -t 0 ]]; then
+        # Command supplied through stdin
+        commands=$(cat)
+    else
+        # Interactive fzf picker
+        selected=$(
+            history |
+            fzf --multi \
+                --tac \
+                --height=60% \
+                --reverse \
+                --prompt='Delete history > ' \
+                --bind='ctrl-a:select-all'
+        )
+
+        [[ -z "$selected" ]] && return
+
+        commands=$(printf '%s\n' "$selected" |
+            sed 's/^ *[0-9]* *//')
+    fi
+
+    while IFS= read -r command; do
+        [[ -z "$command" ]] && continue
+
+        history -d "$(history | awk -v cmd="$command" '
+            {
+                line=$0
+                sub(/^ *[0-9]+ */, "", line)
+                if (line == cmd) {
+                    print $1
+                    exit
+                }
+            }
+        ')"
+    done <<< "$commands"
+
+    history -w
+}
+
+# ============================================================
+# Attach ble.sh
+# ============================================================
+
+if [[ -n "${BLE_VERSION:-}" ]]; then
     ble-attach
 fi
-if [[ -n "$SSH_CONNECTION" ]]; then
-    source "$HOME/.bashrc.d/themes/phone.sh"
-else
-    source "$HOME/.bashrc.d/themes/desktop.sh"
-fi
-source -- ~/.local/share/blesh/ble.sh

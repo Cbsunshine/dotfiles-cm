@@ -16,6 +16,13 @@
   (setq emacspeak-minibuffer-verbosity 1)
   (setq emacspeak-completion-annotate nil))
 
+(use-package emacspeak-plus
+  :vc (:url "https://github.com/OSadovy/emacspeak-plus" :rev :newest)
+  :demand t
+  :config (emacspeak-plus-setup))
+
+
+
 ;; ---- Speak candidate + key binding (commands only) ----
 
 (defun emacspeak-speak-completion-with-key ()

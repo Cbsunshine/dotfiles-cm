@@ -16,14 +16,13 @@ ble-face command_jobs='fg=yellow'
 ble-face auto_complete='fg=246'
 ble-face -s menu_complete_match fg=015,bg=126
 ble-face region_insert='fg=27'
-
+PS1='\A | \w \$ \n'
 
 # ============================================================
 # SSH / Phone settings
 # ============================================================
 
-if [[ -n "$SSH_CONNECTION" ]]; then
-    PS1='\A | \w\W \$ '
+#if [[ -n "$SSH_CONNECTION" ]]; then
     PROMPT_DIRTRIM=2
 
     LS_COLORS="${LS_COLORS}:di=1;96"
@@ -34,4 +33,4 @@ if [[ -n "$SSH_CONNECTION" ]]; then
     ble-face syntax_error='fg=196'
     ble-face menu_complete_selected='fg=16,bg=153'
     ble-face menu_filter_input='fg=16,bg=229'
-fi
+#fi
