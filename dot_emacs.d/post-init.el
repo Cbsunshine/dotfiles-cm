@@ -396,32 +396,23 @@
 
 
 ;;; Themes
-(use-package kooten-theme
-  :ensure t)
-(use-package sweet-theme
-  :ensure t)
-(use-package omtose-phellack-themes
-  :ensure t)
-(use-package theme-looper
+(use-package kooten-theme :ensure t)
+(use-package sweet-theme :ensure t)
+(use-package omtose-phellack-themes :ensure t)
+(use-package doric-themes :demand t)
+
+(use-package rand-theme
   :ensure t
-  :after (doric-themes omtose-phellack-themes sweet-theme kooten-theme)
-  :init
-  (theme-looper-enable-random-theme)
+  :after (omtose-phellack-themes sweet-theme kooten-theme doric-themes)
   :config
-  ((theme-looper-set-favorite-themes '(wombat doric-dark doric-lion doric-pine doric-plum doric-water doric-mermaid doric-obsidian omtose-softer omtose-darker sweet kooten modus-vivendi-tinted))
-))
+  (setq rand-theme-wanted  '(wombat doric-dark doric-lion doric-pine doric-plum))
+  (rand-theme))
 
-
-
-(use-package doric-themes
-  :demand t)
 
 (use-package consult-flycheck
-
-  :after (consult flycheck))
+ :after (consult flycheck))
 
 (use-package consult-yasnippet
-
   :after (consult yasnippet)
   :bind (("C-c y" . consult-yasnippet)))
 
@@ -430,7 +421,6 @@
 ;; abbreviation, YASnippet automatically expands it into a full template, which
 ;; can include placeholders, fields, and dynamic content.
 (use-package yasnippet
-
   :hook
   ((prog-mode text-mode conf-mode) . yas-minor-mode)
   :custom
@@ -440,7 +430,6 @@
   (yas-snippet-revival nil)
   (yas-wrap-around-region nil)
   (yas-verbosity 0))
-
 
 (use-package outli
   :init
@@ -455,8 +444,6 @@
   :ensure nil
   :hook
   (eww-mode . (lambda () (display-line-numbers-mode -1))))
-
-
 
 (use-package dired
   :ensure nil
