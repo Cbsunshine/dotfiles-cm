@@ -58,6 +58,17 @@
   (set-face-attribute 'default nil :height 500)
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
+(use-package multiple-cursors
+  :commands (mc/edit-lines))
+
+(use-package fix-word
+  :commands (fix-word-capitalize fix-word-upcase fix-word-downcase)
+  :bind
+    ("M-u" . fix-word-upcase)
+    ("M-l" . fix-word-downcase)
+    ("M-c" . fix-word-capitalize))
+
+(use-package wrap-region :ensure t)
 (use-package yaml)
 (use-package markdown-mode)
 
