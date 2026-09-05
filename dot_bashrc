@@ -31,6 +31,7 @@ export VISUAL='emacsclient -s main -t'
 
 export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.cargo/bin:$HOME/.deno/bin:$PATH"
 
+source ~/.bashrc.d/bf-filesystem.sh
 
 
 # History

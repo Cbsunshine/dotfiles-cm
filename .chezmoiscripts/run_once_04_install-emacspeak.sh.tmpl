@@ -2,44 +2,48 @@
 set -euo pipefail
 
 PACKAGE="emacspeak"
-STOW_DIR="/usr/local/stow"
-SRC_DIR="$HOME/src/emacspeak"
+STOW_DIR="$HOME/.local/stow"
+SRC_DIR="$STOW_DIR/src/emacspeak"
 
 # Already installed?
 if [[ -d "$STOW_DIR/$PACKAGE" ]] &&
-   command -v emacspeak >/dev/null 2>&1; then
+   [ -f  "$STOW_DIR/emacspeak/lisp/emacspeak-setup.el" ] ; then
     echo "Emacspeak is already installed."
     exit 0
 fi
 
-mkdir -p "$HOME/src"
-sudo mkdir -p "$STOW_DIR"
 
 # Clone Emacspeak if necessary.
-if [[ ! -d "$SRC_DIR/.git" ]]; then
+if [[ ! -d "$SRC_DIR/emacspeak/lisp" ]]; then
     git clone https://github.com/tvraman/emacspeak.git "$SRC_DIR"
 fi
 
 cd "$SRC_DIR"
 
 # Configure Emacspeak.
-sudo make config
+#sudo
+make config
 
 # Build.
 make -j"$(nproc)"
 
 # Install into the Stow package directory.
-sudo rm -rf "$STOW_DIR/$PACKAGE"
-sudo mkdir -p "$STOW_DIR/$PACKAGE"
-sudo cp -a "$SRC_DIR"/. "$STOW_DIR/$PACKAGE"/
+#sudo
+rm -rf "$STOW_DIR/$PACKAGE"
+#sudo
+mkdir -p "$STOW_DIR/$PACKAGE"
+#sudo
+cp -a "$SRC_DIR" "$STOW_DIR/$PACKAGE"/
 
 # Activate the package.
 cd "$STOW_DIR"
 
 if [[ -e "$STOW_DIR/$PACKAGE" ]]; then
-    sudo stow -D "$PACKAGE" 2>/dev/null || true
+    #sudo
+    stow -D "$PACKAGE" 2>/dev/null || true
 fi
 
-sudo stow "$PACKAGE"
+#sudo
+stow "$PACKAGE"
 
 echo "Emacspeak installed and stowed."
