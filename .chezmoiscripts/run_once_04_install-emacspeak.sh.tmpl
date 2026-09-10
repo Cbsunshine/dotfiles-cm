@@ -6,8 +6,8 @@ STOW_DIR="$HOME/.local/stow"
 SRC_DIR="$STOW_DIR/src/emacspeak"
 
 # Already installed?
-if [[ -d "$STOW_DIR/$PACKAGE" ]] &&
-   [ -f  "$STOW_DIR/emacspeak/lisp/emacspeak-setup.el" ] ; then
+if [[ -d "$SRC_DIR/$PACKAGE" ]] &&
+   [ -f  "$SRC_DIR/emacspeak/lisp/emacspeak-setup.el" ] ; then
     echo "Emacspeak is already installed."
     exit 0
 fi

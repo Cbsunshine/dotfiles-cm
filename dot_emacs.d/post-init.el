@@ -58,6 +58,17 @@
   (set-face-attribute 'default nil :height 500)
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
+(use-package jinx
+  :ensure t
+  :hook (emacs-startup . global-jinx-mode)
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages))
+  :config
+  (set-face-attribute 'jinx-misspelled nil
+                    :underline nil
+                    :background " #FF000D"))
+
+
 (use-package multiple-cursors
   :commands (mc/edit-lines))
 
@@ -518,7 +529,8 @@
   :hook (prog-mode . company-mode)
   :custom
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  (company-idle-delay 0.0)
+  (setq completion-styles '(basic partial-completion)))
 
 (use-package magit)
 ;; (use-package forge
@@ -624,4 +636,4 @@
  'server-after-make-frame-hook
  (lambda ()
    (when (string= server-name "emacspeak")
-     (load "/home/cassidy/.local/src/emacspeak/lisp/emacspeak-setup.el"))))
+     (load "/home/cassidy/.local/stow/src/emacspeak/lisp/emacspeak-setup.el"))))

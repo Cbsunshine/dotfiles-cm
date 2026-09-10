@@ -26,3 +26,10 @@ echo "NordVPN login has NOT been performed."
 echo "After your password store is restored, run:"
 echo
 echo '    nordvpn login --token "$(pass show Secrets/NordVPN_Token)"'
+
+nordvpn whitelist add port 22
+nordvpn whitelist add port 443
+nordvpn whitelist add port 2022
+nordvpn set meshnet enable
+nordvpn meshnet set lan-discovery on
+nordvpn set killswitch on
