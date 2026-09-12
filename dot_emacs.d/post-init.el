@@ -37,6 +37,12 @@
   ;; the mode `compile-angel-on-load-mode' was activated.
   (compile-angel-on-load-mode 1))
 
+;; #Make all scripts executable on :save
+;; https://www.masteringemacs.org/article/script-files-executable-automatically
+(add-hook 'after-save-hook
+  'executable-make-buffer-file-executable-if-script-p)
+
+
 (use-package emacs
   :ensure nil
   :custom
