@@ -437,6 +437,11 @@
   (rand-theme))
 
 
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
 (use-package consult-flycheck
  :after (consult flycheck))
 
