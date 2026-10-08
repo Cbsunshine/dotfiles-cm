@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Plover
+Exec=/home/cassidy/.local/bin/plover.AppImage
+Icon=/home/cassidy/.local/share/applications/plover.png
+Type=Application
+Terminal=false

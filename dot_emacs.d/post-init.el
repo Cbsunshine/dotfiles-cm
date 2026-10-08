@@ -5,6 +5,8 @@
 ;; native machine code, resulting in faster execution and improved
 ;; responsiveness.
 ;;
+
+ (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 ;; Ensure adding the following compile-angel code at the very beginning
 ;; of your `~/.emacs.d/post-init.el` file, before all other packages.
 (use-package compile-angel
