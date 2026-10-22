@@ -8,7 +8,6 @@ shopt -s dotglob
 shopt -s cdspell
 shopt -s histappend
 
-PROMPT_COMMAND='history -a'
 
 # History
 HISTSIZE=100000
