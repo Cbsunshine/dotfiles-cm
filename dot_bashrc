@@ -30,7 +30,6 @@ export VISUAL='emacsclient -s main -t'
 
 export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.cargo/bin:$HOME/.deno/bin:$PATH"
 
-source ~/.bashrc.d/bf-filesystem.sh
 
 
 # History
@@ -72,6 +71,12 @@ if [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
         source "$HOME/.bashrc.d/blesh.sh"
     fi
 fi
+
+# Load all custom Bash functions
+for file in "$HOME/.bashrc.d/"*.sh; do
+    [[ -f "$file" ]] && source "$file"
+done
+
 
 alias cm='chezmoi'
 alias cme='chezmoi edit'
