@@ -24,6 +24,8 @@ export DTK_PROGRAM=espeak
 export TERM=xterm-256color
 export COLORTERM=truecolor
 
+export PASSWORD_STORE_ENABLE_EXTENSIONS=true
+
 export EDITOR='emacsclient -s main -t'
 export VISUAL='emacsclient -s main -t'
 
